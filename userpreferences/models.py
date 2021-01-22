@@ -6,5 +6,5 @@ class UserPreference(models.Model):
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
     currency = models.CharField(max_length=255, blank=True, null=True)
 
-    #def __str__(self):
-        #return str(user)+'s' + 'preferences'
+    def __str__(self):
+        return str(user)+'s' + 'preferences'

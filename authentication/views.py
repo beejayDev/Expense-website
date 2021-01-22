@@ -141,9 +141,8 @@ class LoginView(View):
 
         if username and password:
             user = authenticate(username=username, password=password)
-            if user is not None:
-                import pdb;
-                pdb.set_trace()
+
+            if user:
                 if user.is_active:
                     login(request, user)
                     messages.success(request, f'Welcome back {request.user.username} you are now logged in')
