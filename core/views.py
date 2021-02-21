@@ -13,16 +13,15 @@ def search_expense(request):
     if request.method == 'POST':
 
         search_str = json.loads(request.body).get('searchText')
-        expenses = Expense.objects.filter(amount__istartswith=search_str, user = request.user) | Expense.objects.filter(
-                date__istartswith=search_str, user = request.user) | Expense.objects.filter(
-                        description__icontains=search_str, user = request.user) | Expense.objects.filter(
-
-                                category__icontains=search_str, user = request.user)
+        expenses = Expense.objects.filter(amount__istartswith=search_str, user = request.user) | Expense.objects.filter( 
+            date__istartswith=search_str, user = request.user) | Expense.objects.filter(
+            description__icontains=search_str, user = request.user) | Expense.objects.filter(
+                category__icontains=search_str, user = request.user)
 
         data = expenses.values()
         return JsonResponse(list(data), safe=False)
 
-
+#List all the Expenses
 @login_required(login_url='/login')
 def index(request):
     categories = Category.objects.all()
@@ -39,6 +38,7 @@ def index(request):
             }
     return render(request, 'expenses/index.html', context)
 
+#Create an Expense
 def addExpense(request):
     categories = Category.objects.all()
     context = {
@@ -68,7 +68,22 @@ def addExpense(request):
         messages.success(request, "Expense saved Succefully")
         return redirect('index')
 
+def addCategory(request):
+    if request.method == "GET":
+        return render(request, 'expenses/add_category.html')
 
+    if request.method == "POST":
+        category = request.POST['category']
+
+        if not category:
+            messages.error(request, 'Category can not be empty')
+            return render(request, 'expenses/add_category.html')
+
+        Category.objects.create(name=category)
+        messages.success(request, 'Category saved successfully')
+        return redirect('add_expense')
+
+#Edit an Expense
 def expense_edit(request, id):
     categories = Category.objects.all()
     expense = Expense.objects.get(pk=id)
@@ -103,8 +118,8 @@ def expense_edit(request, id):
 
         expense.save()
         messages.success(request, "Expense updated Succefully")
-        return redirect('index')
 
+#Delete Expense
 def delete_expense(request, id):
     expense = Expense.objects.get(pk=id)
     expense.delete()

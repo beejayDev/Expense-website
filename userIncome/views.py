@@ -33,6 +33,23 @@ def income(request):
             'currency': currency
             }
     return render(request, 'income/index.html', context)
+    
+def addSource(request):
+    if request.method == "GET":
+        return render(request, 'income/add_source.html')
+
+    if request.method == "POST":
+        source = request.POST['source']
+        print(source)
+
+        if not source:
+            messages.error(request, 'Source can not be empty')
+            return render(request, 'income/add_source.html')
+
+        Source.objects.create(name=source)
+        messages.success(request, 'source saved successfully')
+        return redirect('index')
+
 
 def add_income(request):
     sources = Source.objects.all()

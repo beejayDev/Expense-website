@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<h1>This is the add category page.</h1>
+<form action="{% url 'add_category' %}" method="POST" />
+{% include 'partials/message.html' %}
+{% csrf_token %}
+<div class="form-group">
+<input type="text" placeholder="Category" name="category" class="form-control form-control-sm" />
+<input type="submit" value="Submit" class="btn btn-primary btn-primary-sm">
+</form>
+</div>
+
+{% endblock content %}

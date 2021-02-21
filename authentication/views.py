@@ -13,15 +13,24 @@ from django.urls import reverse
 from .utils import token_generator
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+import threading
 
-# Create your views here.
+#Create your views here.
+class EmailThread(threading.Thread):
+    def __init__(self, email):
+        self.email = email 
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.email.send(fail_silently=False)
+        
 class registrationView(View):
     def get(self, request):
         return render(request, 'auth/register.html')
 
 
 class usernameValidationView(View):
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         username = data['username']
 
@@ -32,7 +41,7 @@ class usernameValidationView(View):
         return JsonResponse({'username-valid': True})
 
 class emailValidationView(View):
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         email = data['email']
 
@@ -48,7 +57,7 @@ class RegistrationView(View):
         return render(request, 'auth/register.html')
 
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         username = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -101,8 +110,7 @@ class RegistrationView(View):
                         'noreply@support.com',
                         [email],
                         )
-                email.fail_silently=False
-                email.send()
+                EmailThread(email).start()
 
                 messages.success(request, 'Account created succesfully')
                 return redirect('login')
@@ -135,7 +143,7 @@ class LoginView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'auth/login.html')
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         username = request.POST['username']
         password = request.POST['password']
 
@@ -211,7 +219,7 @@ class RequestPasswordView(View):
                     [email],
                     )
             email.send(fail_silently=False)
-            #email.send()
+            EmailThread(email).start()
 
         messages.success(request, 'we\'ve sent you an email to reset your password')
         return render(request, 'auth/reset-password.html')

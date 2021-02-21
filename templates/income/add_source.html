@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<h1>This is the add source page.</h1>
+<form action="{% url 'add_source' %}" method="POST" />
+{% include 'partials/message.html' %}
+{% csrf_token %}
+<div class="form-group">
+<input type="text" placeholder="Source" name="source" class="form-control form-control-sm" />
+<input type="submit" value="Submit" class="btn btn-primary btn-primary-sm">
+</form>
+</div>
+
+{% endblock content %}

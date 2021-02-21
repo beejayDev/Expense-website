@@ -1,7 +1,9 @@
-const searchField = document.querySelector('#searchField');const tableOutput = document.querySelector('.table-output');
+const searchField = document.querySelector('#searchField');
+const tableOutput = document.querySelector('.table-output');
 const appTable = document.querySelector('.app-table');
 const paginationContainer = document.querySelector('.pagination-container');
 const tableBody = document.querySelector('.table-body');
+
 
 tableOutput.style.display = 'none';
 
@@ -18,8 +20,7 @@ searchField.addEventListener('keyup', (e) => {
 			.then((res) => res.json())
 			.then((data) => {
 				appTable.style.display = 'none';
-				tableOutput.style.display =
- 'block';
+				tableOutput.style.display = 'block';
 				if(data.length === 0) {
 					tableOutput.innerHTML = "No results found";
 				} else {
