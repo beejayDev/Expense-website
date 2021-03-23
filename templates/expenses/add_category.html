@@ -10,8 +10,12 @@
 {% csrf_token %}
 <div class="form-group">
 <input type="text" placeholder="Category" name="category" class="form-control form-control-sm" />
-<input type="submit" value="Submit" class="btn btn-primary btn-primary-sm">
 </form>
-</div>
+
+<input type="submit" value="Submit" class="btn btn-primary btn-primary-sm">
+
+{% for cat in categories %}
+{{ cat }}
+{% endfor %}
 
 {% endblock content %}

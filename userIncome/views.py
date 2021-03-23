@@ -34,6 +34,7 @@ def income(request):
             }
     return render(request, 'income/index.html', context)
     
+@login_required(login_url='/login')
 def addSource(request):
     if request.method == "GET":
         return render(request, 'income/add_source.html')
@@ -48,9 +49,9 @@ def addSource(request):
 
         Source.objects.create(name=source)
         messages.success(request, 'source saved successfully')
-        return redirect('index')
+        return redirect('add_income')
 
-
+@login_required(login_url='/login')
 def add_income(request):
     sources = Source.objects.all()
     context = {
@@ -80,7 +81,7 @@ def add_income(request):
         messages.success(request, "Record saved Succefully")
         return redirect('income')
 
-
+@login_required(login_url='/login')
 def income_edit(request, id):
     sources = Source.objects.all()
     income= Income.objects.get(pk=id)
@@ -118,6 +119,7 @@ def income_edit(request, id):
         messages.success(request, "Record updated Succefully")
         return redirect('income')
 
+@login_required(login_url='/login')
 def income_delete(request, id):
     income = Income.objects.get(pk=id)
     income.delete()

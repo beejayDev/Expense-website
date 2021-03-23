@@ -7,6 +7,7 @@ import json
 from django.http import JsonResponse
 from userpreferences.models import UserPreference
 #from django.shortcuts import get_object_or_404
+import datetime
 
 # Create your views here.
 def search_expense(request):
@@ -39,6 +40,7 @@ def index(request):
     return render(request, 'expenses/index.html', context)
 
 #Create an Expense
+@login_required(login_url='/login')
 def addExpense(request):
     categories = Category.objects.all()
     context = {
@@ -68,9 +70,14 @@ def addExpense(request):
         messages.success(request, "Expense saved Succefully")
         return redirect('index')
 
+@login_required(login_url='/login')
 def addCategory(request):
     if request.method == "GET":
-        return render(request, 'expenses/add_category.html')
+        category = Category.objects.all()
+        context = {
+            'categories': category
+        }
+        return render(request, 'expenses/add_category.html', context)
 
     if request.method == "POST":
         category = request.POST['category']
@@ -84,6 +91,7 @@ def addCategory(request):
         return redirect('add_expense')
 
 #Edit an Expense
+@login_required(login_url='/login')
 def expense_edit(request, id):
     categories = Category.objects.all()
     expense = Expense.objects.get(pk=id)
@@ -120,8 +128,38 @@ def expense_edit(request, id):
         messages.success(request, "Expense updated Succefully")
 
 #Delete Expense
+@login_required(login_url='/login')
 def delete_expense(request, id):
     expense = Expense.objects.get(pk=id)
     expense.delete()
     messages.success(request, 'Expense removed')
     return redirect('index')
+
+def expense_category_summary(request):
+    tday_date = datetime.date.today()
+    six_month_ago = tday_date - datetime.timedelta(days = 30 * 6)
+    
+    expense = Expense.object.filter(user = request.user,
+        date__gte = six_month_ago, date__lte = tday_date)
+    finalrep = {}
+
+    def get_category(expense):
+        return expense.category
+
+    category_list = list(set(map(get_category, expenses)))
+    
+    def get_expense_category_amount(category):
+        amount = 0
+        filterd_by_category = expense.filter(category=category)
+
+        for item in filtered_by_category:
+            amount += item.amount
+        return amount
+
+    for x in expenses:
+        for y in category_list:
+            finalrep[y] = get_expense_category_amount(y)
+    return JsonResponse({'expense_category_data': finalrep }, safe=false)
+
+def stats_view(request):
+    return render(request, 'expenses/stats.html') 

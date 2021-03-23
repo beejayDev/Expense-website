@@ -11,7 +11,7 @@
 
 			<div class="card-body">
 			<div class="card-title py-3">
-				<h4>Register for a free account</h4>
+				<h4 class='ml-4'>Register for a free account</h4>
 			</div>
 
 				<form action="{% url 'register' %}" method="post" />
@@ -54,8 +54,9 @@
 					</div>
 				</form>
 				<div class="container">
-				<span>have an account? </span><a href="{% url 'login' %}">Register</a>
-                                <span>Forget Password? </span><a href="{% url 'request-password' %}">Reset Password</a>
+				<span>have an account? </span><a href="{% url 'login' %}">Login</a>
+				<br />
+                <span>Forget Password? </span><a href="{% url 'request-password' %}">Reset Password</a>
 				</div>
 			</div>
 		</div>
